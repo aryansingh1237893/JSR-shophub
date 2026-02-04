@@ -1,0 +1,48 @@
+{
+  "name": "shophub",
+  "version": "1.0.0",
+  "description": "JSR ShopHub - Complete Full-Stack E-Commerce Platform",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "test": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "deploy:vercel": "vercel --prod",
+    "deploy:heroku": "git push heroku main",
+    "lint": "cd backend && npm run lint",
+    "format": "prettier --write \"**/*.{js,jsx,json,css,md}\"",
+    "heroku-postbuild": "cd frontend && npm run build",
+    "heroku-prebuild": "npm install -g concurrently"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "ecommerce",
+    "react",
+    "express",
+    "mongodb",
+    "nodejs",
+    "shopping",
+    "store",
+    "marketplace"
+  ],
+  "author": "JSR Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aryansingh1237893/JSR-shophub"
+  }
+}
