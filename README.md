@@ -2,6 +2,71 @@
 
 ShopHub is a full-stack e-commerce application built with modern technologies, featuring a comprehensive set of features for both users and administrators.
 
+## ⚡ Quick Start (3 Minutes)
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account
+- Git
+
+### 1. Clone & Install
+```bash
+git clone https://github.com/aryansingh1237893/JSR-shophub.git
+cd JSR-shophub
+
+# Install all dependencies
+npm run install:all
+```
+
+### 2. Setup Environment
+```bash
+# Copy environment template
+cp .env.example backend/.env
+
+# Edit backend/.env with your values:
+# - MongoDB URI (from Atlas)
+# - JWT Secret (generate random)
+# - Stripe keys (for payments)
+# - Email/SMS credentials (optional)
+```
+
+### 3. Start Development
+```bash
+# Start both frontend & backend
+npm run dev
+
+# Or start separately:
+# Terminal 1: npm run dev:backend
+# Terminal 2: npm run dev:frontend
+```
+
+### 4. Open Browser
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000/api
+
+### 5. Deploy to Production
+```bash
+# Frontend: Vercel (recommended)
+npm install -g vercel
+cd frontend && vercel --prod
+
+# Backend: Heroku
+cd backend && heroku create && git push heroku main
+```
+
+### Alternative: Docker Setup
+```bash
+# Start full stack with Docker
+docker-compose up -d
+
+# Access:
+# Frontend: http://localhost:3000
+# Backend: http://localhost:5000
+# MongoDB: localhost:27017
+```
+
+---
+
 ## 🚀 Features
 
 ### Frontend Features (User Side)

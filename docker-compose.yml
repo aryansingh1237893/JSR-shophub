@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: shophub-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: shophub
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./docker/mongo-init:/docker-entrypoint-initdb.d
+    networks:
+      - shophub-network
+
+  # Redis Cache (Optional)
+  redis:
+    image: redis:7.2-alpine
+    container_name: shophub-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - shophub-network
+
+  # Elasticsearch (Optional - for advanced search)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: shophub-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - shophub-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: shophub-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/shophub?authSource=admin
+      - JWT_SECRET=your-development-jwt-secret-key-here
+      - REDIS_URL=redis://redis:6379
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+      - CORS_ORIGINS=http://localhost:3000,http://frontend:3000
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+      - redis
+      - elasticsearch
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - shophub-network
+    command: npm run dev
+
+  # Frontend App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: shophub-frontend
+    restart: unless-stopped
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_NODE_ENV=development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - shophub-network
+    command: npm start
+
+volumes:
+  mongodb_data:
+  redis_data:
+  elasticsearch_data:
+
+networks:
+  shophub-network:
+    driver: bridge
