@@ -1,41 +1,35 @@
 const express = require('express');
 const { authMiddleware } = require('../middleware/auth');
+const paymentController = require('../controllers/paymentController');
 
 const router = express.Router();
 
-// Initiate payment
-router.post('/initiate', authMiddleware, (req, res) => {
-  res.json({ message: 'Payment initiated' });
-});
+// Webhook (no auth required) - use raw body to verify signature
+router.post('/webhook', express.raw({ type: 'application/json' }), paymentController.handleWebhook);
 
-// Verify payment
-router.post('/verify', authMiddleware, (req, res) => {
-  res.json({ message: 'Payment verified' });
-});
+// Initiate payment (creates a Stripe PaymentIntent)
+router.post('/initiate', authMiddleware, paymentController.initiatePayment);
 
-// Card payment
-router.post('/card', authMiddleware, (req, res) => {
-  res.json({ message: 'Card payment processed' });
-});
+// Verify payment / get payment status
+router.post('/verify', authMiddleware, paymentController.verifyPayment);
+
+// Card payment (alias to initiate)
+router.post('/card', authMiddleware, paymentController.processCardPayment);
 
 // UPI payment
-router.post('/upi', authMiddleware, (req, res) => {
-  res.json({ message: 'UPI payment processed' });
-});
+router.post('/upi', authMiddleware, paymentController.processUPIPayment);
 
 // Wallet payment
-router.post('/wallet', authMiddleware, (req, res) => {
-  res.json({ message: 'Wallet payment processed' });
-});
+router.post('/wallet', authMiddleware, paymentController.processWalletPayment);
 
 // EMI options
-router.get('/emi-options', authMiddleware, (req, res) => {
-  res.json({ message: 'EMI options' });
-});
+router.get('/emi-options', authMiddleware, paymentController.getEMIOptions);
 
 // Initiate refund
-router.post('/refund', authMiddleware, (req, res) => {
-  res.json({ message: 'Refund initiated' });
-});
+router.post('/refund', authMiddleware, paymentController.processRefund);
+
+// Get payment details
+router.get('/:paymentIntentId', authMiddleware, paymentController.getPaymentDetails);
 
 module.exports = router;
+

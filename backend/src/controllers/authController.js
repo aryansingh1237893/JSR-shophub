@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { sendWelcomeEmail, sendOTPSMS, sendPasswordResetEmail } = require('./notificationController');
 
 // Generate JWT Token
 const generateToken = (user) => {
@@ -35,6 +36,12 @@ exports.register = async (req, res) => {
     await user.save();
 
     const token = generateToken(user);
+
+    // Send welcome email
+    setImmediate(() => {
+      sendWelcomeEmail(user);
+    });
+
     res.status(201).json({
       message: 'User registered successfully',
       token,
@@ -92,8 +99,21 @@ exports.login = async (req, res) => {
 exports.loginWithOTP = async (req, res) => {
   try {
     const { phone } = req.body;
-    // TODO: Integrate with Twilio for OTP sending
-    res.json({ message: 'OTP sent to phone number' });
+
+    const user = await User.findOne({ phone });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found with this phone number' });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Send OTP via SMS
+    await sendOTPSMS(phone, otp);
+
+    // In production, store OTP in Redis/database with expiration
+    // For demo, we'll just return success
+    res.json({ message: 'OTP sent to your phone number', phone });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -103,13 +123,30 @@ exports.loginWithOTP = async (req, res) => {
 exports.verifyOTP = async (req, res) => {
   try {
     const { phone, otp } = req.body;
-    // TODO: Verify OTP with Twilio
+
+    // In production, verify OTP from Redis/database
+    // For demo, accept any 6-digit OTP
+    if (!otp || otp.length !== 6 || !/^\d{6}$/.test(otp)) {
+      return res.status(400).json({ error: 'Invalid OTP' });
+    }
+
     const user = await User.findOne({ phone });
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
+
     const token = generateToken(user);
-    res.json({ message: 'OTP verified', token });
+    res.json({
+      message: 'OTP verified successfully',
+      token,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

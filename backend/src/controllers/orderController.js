@@ -1,6 +1,8 @@
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const { sendOrderConfirmationEmail, sendOrderConfirmationSMS, sendOrderStatusUpdate } = require('./notificationController');
+const { sendOrderConfirmationEmail, sendOrderConfirmationSMS } = require('./notificationController');
 
 // Create order
 exports.createOrder = async (req, res) => {
@@ -39,6 +41,12 @@ exports.createOrder = async (req, res) => {
 
     await order.save();
     await Cart.deleteOne({ user: req.userId });
+
+    // Send notifications
+    setImmediate(() => {
+      sendOrderConfirmationEmail(orderId);
+      sendOrderConfirmationSMS(orderId);
+    });
 
     res.status(201).json({ message: 'Order created', order });
   } catch (error) {
@@ -80,6 +88,11 @@ exports.updateOrderStatus = async (req, res) => {
       { orderStatus, updatedAt: Date.now() },
       { new: true }
     );
+
+    // Send status update notification
+    setImmediate(() => {
+      sendOrderStatusUpdate(order.orderId, orderStatus);
+    });
 
     res.json({ message: 'Order status updated', order });
   } catch (error) {

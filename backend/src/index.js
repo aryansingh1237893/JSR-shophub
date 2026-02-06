@@ -14,6 +14,8 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
+const uploadRoutes = require('./routes/uploadRoutes');
+
 const app = express();
 
 // Middleware
@@ -36,6 +38,7 @@ app.use('/api/search', searchRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { FiSearch, FiShoppingCart, FiUser, FiHeart, FiMenu } from 'react-icons/fi';
+import { FiSearch, FiShoppingCart, FiUser, FiHeart, FiMenu, FiMic, FiMicOff } from 'react-icons/fi';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import './Header.css';
 
 const Header = () => {
@@ -12,10 +13,36 @@ const Header = () => {
   const { isLoggedIn, user } = useSelector(state => state.auth);
   const { items } = useSelector(state => state.cart);
 
+  // Speech recognition
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
+
+  // Update search query when speech is recognized
+  React.useEffect(() => {
+    if (transcript) {
+      setSearchQuery(transcript);
+    }
+  }, [transcript]);
+
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${searchQuery}`);
+    const query = searchQuery.trim() || transcript.trim();
+    if (query) {
+      navigate(`/search?q=${query}`);
+      resetTranscript();
+    }
+  };
+
+  const handleVoiceSearch = () => {
+    if (listening) {
+      SpeechRecognition.stopListening();
+    } else {
+      resetTranscript();
+      SpeechRecognition.startListening({ continuous: false, language: 'en-IN' });
     }
   };
 
@@ -38,10 +65,20 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Search products..."
-                value={searchQuery}
+                value={searchQuery || transcript}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="search-input"
               />
+              {browserSupportsSpeechRecognition && (
+                <button
+                  type="button"
+                  onClick={handleVoiceSearch}
+                  className={`voice-search-btn ${listening ? 'listening' : ''}`}
+                  title={listening ? 'Stop voice search' : 'Start voice search'}
+                >
+                  {listening ? <FiMicOff /> : <FiMic />}
+                </button>
+              )}
               <button type="submit" className="search-btn">
                 <FiSearch />
               </button>
