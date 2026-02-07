@@ -20,7 +20,9 @@
     "react-helmet": "^6.1.0",
     "react-lazy-load-image-component": "^1.6.0",
     "react-image-lightbox": "^5.1.4",
-    "react-speech-recognition": "^3.10.0"
+    "react-speech-recognition": "^3.10.0",
+    "@stripe/react-stripe-js": "^1.16.0",
+    "@stripe/js": "^1.41.0"
   },
   "scripts": {
     "start": "react-scripts start",
