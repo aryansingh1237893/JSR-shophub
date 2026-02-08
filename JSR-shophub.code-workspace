@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "files.exclude": {},
+    "explorer.openEditors.visible": 9,
+    "git.enabled": true
+  }
+}

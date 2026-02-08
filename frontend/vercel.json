@@ -1,0 +1,20 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "react",
+  "outputDirectory": "build",
+  "env": [
+    {
+      "key": "REACT_APP_API_URL",
+      "value": "https://shophub-api.azurewebsites.net/api"
+    },
+    {
+      "key": "REACT_APP_STRIPE_PUBLIC_KEY",
+      "value": "@REACT_APP_STRIPE_PUBLIC_KEY"
+    }
+  ],
+  "git": {
+    "deployPaths": ["frontend"]
+  }
+}
