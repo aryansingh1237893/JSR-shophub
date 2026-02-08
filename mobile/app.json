@@ -1,0 +1,65 @@
+{
+  "expo": {
+    "name": "ShopHub",
+    "slug": "shophub-mobile",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTabletMode": true,
+      "bundleIdentifier": "com.shophub.app",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSCameraUsageDescription": "ShopHub needs camera access to take product photos and videos.",
+        "NSPhotoLibraryUsageDescription": "ShopHub needs photo library access to upload product images.",
+        "NSLocationWhenInUseUsageDescription": "ShopHub uses your location for delivery estimation.",
+        "NSUserTrackingUsageDescription": "Allow ShopHub to track your activity for analytics and personalization."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.shophub.app",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.INTERNET",
+        "android.permission.READ_CONTACTS",
+        "android.permission.READ_CALL_LOG"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow ShopHub to access your photos.",
+          "cameraPermission": "Allow ShopHub to access your camera."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow ShopHub to access your location."
+        }
+      ],
+      [
+        "@react-native-firebase/app",
+        {}
+      ]
+    ],
+    "owner": "aryansingh1237893",
+    "scheme": "shophub"
+  }
+}
