@@ -22,7 +22,7 @@
     "react-image-lightbox": "^5.1.4",
     "react-speech-recognition": "^3.10.0",
     "@stripe/react-stripe-js": "^1.16.0",
-    "@stripe/js": "^1.41.0"
+    "@stripe/stripe-js": "^1.41.0"
   },
   "scripts": {
     "start": "react-scripts start",
